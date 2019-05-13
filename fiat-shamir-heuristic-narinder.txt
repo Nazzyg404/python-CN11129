@@ -1,0 +1,78 @@
+import sys;
+import hashlib;
+import random
+import random
+from math import sqrt
+
+def prime(x):
+    if x%2==0:return False
+    elif any(x%i==0 for i in xrange(3,int(sqrt(x))+1,2)):return False
+    else:return True
+
+prime_list=[x for x in xrange(3,1973) if prime(x)]
+
+
+string = raw_input("Enter your password : ")
+p = random.choice(prime_list)
+g = random.choice(prime_list)
+v=9
+
+def string2numeric_hash(text):
+    import hashlib
+    return int(hashlib.sha256(text).hexdigest()[:8], 16)
+
+x = string2numeric_hash(string)
+x = abs(hash(x)) % (10 ** 2)
+
+if (len(sys.argv)>1):
+        g=int(sys.argv[1])
+
+if (len(sys.argv)>2):
+        x=int(sys.argv[2])
+
+v= random.randint(3, 8)
+
+print 'p=',p
+print 'g=',g
+print 'x=',x, ' (the secret)'
+print 'v=',v, ' (random)'
+print '=====Alice computes========='
+
+import hashlib
+
+y = g**x
+t = g**v
+
+print 'y=',y
+
+c = string2numeric_hash(str(g)+str(y)+str(t))
+c =c % p
+
+print 'c=',c
+
+r= v -c*x
+
+print '=============='
+
+print 'Alice sends (t,r)=(',str(t),',',(r),')'
+
+t1 = (g**r)
+t2 = (y**c)
+
+val=int(t1*t2)
+print 'My calc for g^r x y^c=',val
+
+if (val==t):
+        print "Alice has proven her ID"
+else:
+        print "You are a fraud"
+
+
+
+
+
+
+
+
+
+
